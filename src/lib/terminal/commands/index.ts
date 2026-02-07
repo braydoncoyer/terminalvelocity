@@ -1,0 +1,27 @@
+// Side-effect imports to trigger command self-registration
+import "./cd";
+import "./ls";
+import "./pwd";
+import "./mkdir";
+import "./touch";
+import "./cat";
+import "./echo";
+import "./clear";
+import "./head";
+import "./tail";
+import "./grep";
+import "./wc";
+import "./sort";
+import "./uniq";
+import "./find";
+import "./which";
+import "./whoami";
+import "./history";
+import "./rm";
+import "./cp";
+import "./mv";
+import "./rmdir";
+import "./less";
+import "./man";
+import "./export";
+import "./alias";

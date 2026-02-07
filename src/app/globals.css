@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-bg-0: #0a0a0a;
+  --color-bg-1: #111111;
+  --color-bg-2: #1a1a1a;
+  --color-bg-3: #262626;
+  --color-fg: #e0e0e0;
+  --color-fg-muted: #888888;
+  --color-accent: #3b82f6;
+  --color-success: #22c55e;
+  --color-error: #ef4444;
+  --color-warning: #f59e0b;
+
+  --font-sans: system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, "Fira Code", "Cascadia Code", monospace;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-bg-0);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0ms !important;
+    transition-duration: 0ms !important;
+  }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-blink {
+  animation: blink 1s step-end infinite;
+}
+
+/* Skip to content link - visible on focus */
+.skip-to-content {
+  position: absolute;
+  left: -9999px;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  background: var(--color-accent);
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0 0 0.5rem 0;
+  text-decoration: none;
+}
+
+.skip-to-content:focus {
+  left: 0;
+  top: 0;
+}
+
+/* Mobile terminal font size */
+@media (max-width: 640px) {
+  .terminal-text {
+    font-size: 12px !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  @page {
+    margin: 1cm;
+  }
+}
