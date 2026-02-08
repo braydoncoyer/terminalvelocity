@@ -91,3 +91,8 @@ export function useEnv(): Record<string, string> {
   const store = useTerminalStore();
   return useStore(store, (s) => s.env);
 }
+
+export function usePartyCount(): number {
+  const store = useTerminalStore();
+  return useStore(store, (s) => s.partyCount);
+}

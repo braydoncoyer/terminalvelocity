@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useRef } from "react";
 import { VirtualFileSystem } from "@/lib/terminal/filesystem/virtual-fs";
 import { TerminalProvider } from "@/components/terminal/providers/terminal-provider";
 import { TerminalFrame } from "@/components/terminal/terminal-frame";
@@ -33,8 +33,12 @@ const DEMO_SEED: FSSeed = {
 
 function WelcomeMessage() {
   const { pushOutput } = useTerminalActions();
+  const hasPushed = useRef(false);
 
   useEffect(() => {
+    if (hasPushed.current) return;
+    hasPushed.current = true;
+
     pushOutput({
       id: "welcome-1",
       type: "system",
@@ -52,11 +56,27 @@ function WelcomeMessage() {
   return null;
 }
 
+function firePartyConfetti() {
+  import("canvas-confetti").then((mod) => {
+    const fire = mod.default;
+    const colors = ["#3b82f6", "#22c55e", "#f59e0b", "#ec4899", "#e0e0e0"];
+    const shared = { disableForReducedMotion: true, colors, ticks: 200, gravity: 0.8 };
+    fire({ ...shared, particleCount: 80, spread: 70, angle: 55, origin: { x: 0.05, y: 0.95 } });
+    fire({ ...shared, particleCount: 80, spread: 70, angle: 125, origin: { x: 0.95, y: 0.95 } });
+  });
+}
+
 export function DemoTerminalInner() {
   const fs = useMemo(() => VirtualFileSystem.fromSeed(DEMO_SEED), []);
 
+  const handleCommand = useRef((raw: string) => {
+    if (raw.trim() === "party") {
+      firePartyConfetti();
+    }
+  });
+
   return (
-    <TerminalProvider fs={fs}>
+    <TerminalProvider fs={fs} onCommand={handleCommand.current}>
       <WelcomeMessage />
       <TerminalFrame fs={fs} title="Terminal Velocity Demo" />
     </TerminalProvider>

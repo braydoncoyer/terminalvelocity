@@ -3,8 +3,15 @@ const painPoints = [
     label: "Copy-pasting commands from Stack Overflow without understanding them",
   },
   {
-    label:
-      "Feeling lost when AI tools like Claude Code or Codex drop you into a terminal",
+    label: "claude-codex-pain-point",
+    render: (
+      <>
+        Feeling lost when AI tools like{" "}
+        <span className="font-semibold" style={{ color: "#E07A5F" }}>Claude Code</span> or{" "}
+        <span className="font-semibold" style={{ color: "#A970FF" }}>Codex</span>{" "}
+        drop you into a terminal
+      </>
+    ),
   },
   {
     label: 'Googling "how to change directory" for the fifth time this month',
@@ -38,11 +45,26 @@ export function ProblemSection() {
             deeply nested folder, find a file by name, or pipe one command into
             another, you would freeze.
           </p>
+        </div>
+
+        {/* Pull-quote */}
+        <blockquote className="pullquote-border my-10 border-l-2 py-4 pl-6">
+          <p
+            className="font-[family-name:var(--font-display)] italic text-fg-muted"
+            style={{ fontSize: "1.375rem", lineHeight: 1.6 }}
+          >
+            You know it is powerful. But you never built the{" "}
+            <span className="text-accent">muscle memory</span> to actually use
+            it with <span className="text-accent">confidence</span>.
+          </p>
+        </blockquote>
+
+        <div className="space-y-4 text-fg-muted" style={{ fontSize: "1rem", lineHeight: 1.75 }}>
           <p>
             This is the awkward in-between that most developers get stuck in.
-            You know the terminal exists. You know it is powerful. But you
-            never built the muscle memory to actually use it with confidence.
-            And now, with AI-powered CLI tools like Claude Code and Codex
+            And now, with AI-powered CLI tools like{" "}
+            <span className="font-semibold" style={{ color: "#E07A5F" }}>Claude Code</span> and{" "}
+            <span className="font-semibold" style={{ color: "#A970FF" }}>Codex</span>{" "}
             expecting you to work in the terminal, the gap feels bigger than
             ever.
           </p>
@@ -63,7 +85,7 @@ export function ProblemSection() {
                   className="mt-1.5 block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-error/70"
                   aria-hidden="true"
                 />
-                {point.label}
+                {"render" in point ? point.render : point.label}
               </li>
             ))}
           </ul>

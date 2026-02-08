@@ -25,3 +25,6 @@ import "./less";
 import "./man";
 import "./export";
 import "./alias";
+import "./party";
+import "./cowsay";
+import "./vim";

@@ -23,7 +23,7 @@ export function EmailCapture() {
           Stay in the loop
         </h2>
         <p
-          className="mt-3 text-fg-muted"
+          className="mt-3 text-balance text-fg-muted"
           style={{ fontSize: "1rem", lineHeight: 1.7 }}
         >
           Get notified about new lessons and terminal tips. No spam, unsubscribe

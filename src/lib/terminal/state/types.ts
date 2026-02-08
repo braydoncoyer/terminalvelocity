@@ -13,6 +13,7 @@ export interface TerminalState {
   isRunning: boolean;
   cwd: string;
   env: Record<string, string>;
+  partyCount: number;
 }
 
 export interface TerminalActions {

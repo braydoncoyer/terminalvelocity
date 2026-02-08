@@ -8,13 +8,13 @@ export function CurriculumPreview() {
       <div className="mx-auto max-w-3xl">
         <div className="text-center">
           <h2
-            className="font-sans font-bold tracking-tight text-fg"
-            style={{ fontSize: "1.75rem", lineHeight: 1.3 }}
+            className="font-[family-name:var(--font-display)] tracking-tight text-fg"
+            style={{ fontSize: "clamp(1.75rem, 4vw, 2.25rem)", lineHeight: 1.3 }}
           >
             What you will learn
           </h2>
           <p
-            className="mx-auto mt-3 max-w-xl text-fg-muted"
+            className="mx-auto mt-3 max-w-xl text-balance text-fg-muted"
             style={{ fontSize: "1rem", lineHeight: 1.7 }}
           >
             {modules.length} modules, {totalLessons} lessons, zero filler. From

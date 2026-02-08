@@ -7,7 +7,7 @@ const features = [
   },
   {
     icon: ">_",
-    title: "No video -- learn by doing",
+    title: "No video — learn by doing",
     description:
       "Type real commands in a real terminal. Muscle memory beats passive watching every time.",
   },
@@ -43,13 +43,13 @@ export function FeaturesGrid() {
       <div className="mx-auto max-w-4xl">
         <div className="text-center">
           <h2
-            className="font-sans font-bold tracking-tight text-fg"
-            style={{ fontSize: "1.75rem", lineHeight: 1.3 }}
+            className="font-[family-name:var(--font-display)] tracking-tight text-fg"
+            style={{ fontSize: "clamp(1.75rem, 4vw, 2.25rem)", lineHeight: 1.3 }}
           >
             Built for how developers actually learn
           </h2>
           <p
-            className="mx-auto mt-3 max-w-xl text-fg-muted"
+            className="mx-auto mt-3 max-w-xl text-balance text-fg-muted"
             style={{ fontSize: "1rem", lineHeight: 1.7 }}
           >
             No fluff, no filler. Just the core terminal skills you need,
@@ -57,13 +57,13 @@ export function FeaturesGrid() {
           </p>
         </div>
 
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="rounded-lg border border-bg-3 bg-bg-1 p-6 transition-colors duration-150 hover:border-bg-3/80 hover:bg-bg-2/50"
+              className="border-l border-bg-3 pl-5 transition-colors duration-200 hover:border-accent/50"
             >
-              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-md bg-bg-2 font-mono text-xs font-semibold text-accent">
+              <div className="mb-3 font-mono text-xs font-semibold text-accent">
                 {feature.icon}
               </div>
               <h3

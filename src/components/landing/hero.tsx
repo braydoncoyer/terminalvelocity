@@ -3,25 +3,8 @@ import Link from "next/link";
 export function Hero() {
   return (
     <section className="relative flex min-h-[90vh] items-center justify-center overflow-hidden px-6">
-      {/* Background grid pattern */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        aria-hidden="true"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px)",
-          backgroundSize: "64px 64px",
-        }}
-      />
-      {/* Radial glow behind headline */}
-      <div
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-30"
-        aria-hidden="true"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, transparent 70%)",
-        }}
-      />
+      {/* Atmospheric background */}
+      <div className="hero-atmosphere" aria-hidden="true" />
 
       <div className="relative z-10 mx-auto max-w-3xl text-center">
         {/* Terminal prompt accent */}
@@ -30,18 +13,18 @@ export function Hero() {
         </p>
 
         <h1
-          className="font-sans font-bold tracking-tight text-fg"
-          style={{ fontSize: "clamp(2rem, 5vw, 2.625rem)", lineHeight: 1.15 }}
+          className="font-[family-name:var(--font-display)] tracking-tight text-fg"
+          style={{ fontSize: "clamp(3rem, 8vw, 5rem)", lineHeight: 1.1 }}
         >
-          Master the Terminal.
-          <br />
-          Command Your AI.
+          Terminal Velocity
         </h1>
 
         <p
-          className="mx-auto mt-6 max-w-2xl text-fg-muted"
+          className="mx-auto mt-6 max-w-2xl text-balance text-fg-muted"
           style={{ fontSize: "1.125rem", lineHeight: 1.7 }}
         >
+          Master the terminal.{" "}
+          <span className="text-fg">Command your AI.</span>{" "}
           The free, interactive course that teaches terminal fundamentals
           through hands-on practice — so you can confidently work with
           CLI-based AI tools.
@@ -52,7 +35,7 @@ export function Hero() {
             href="/learn"
             className="inline-flex h-12 items-center justify-center rounded-lg bg-accent px-8 font-medium text-white transition-colors duration-150 hover:bg-accent/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           >
-            Start Learning -- Free
+            Start Learning — Free
           </Link>
           <a
             href="#demo"

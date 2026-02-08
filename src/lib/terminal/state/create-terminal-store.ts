@@ -39,7 +39,7 @@ export function createTerminalStore(options: TerminalStoreOptions) {
         SHELL: "/bin/bash",
         TERM: "xterm-256color",
       }, bootHistory);
-      if (result.output && result.output !== "\x1Bclear") {
+      if (result.output && result.output !== "\x1Bclear" && result.output !== "\x1Bparty") {
         bootLines.push({ id: nextLineId(), type: "stdout", content: result.output });
       }
       if (result.error) {
@@ -64,6 +64,7 @@ export function createTerminalStore(options: TerminalStoreOptions) {
       reverseSearchResult: null,
       isRunning: false,
       cwd: fs.cwd,
+      partyCount: 0,
       env: {
         HOME: "/home/user",
         USER: "user",
@@ -143,6 +144,15 @@ export function createTerminalStore(options: TerminalStoreOptions) {
         if (result.output === "\x1Bclear") {
           set((s) => {
             s.outputLines = [];
+          });
+        } else if (result.output === "\x1Bparty") {
+          set((s) => {
+            s.outputLines.push({
+              id: nextLineId(),
+              type: "stdout",
+              content: "Party mode activated!",
+            });
+            s.partyCount += 1;
           });
         } else {
           set((s) => {
