@@ -7,6 +7,6 @@ export const contentType = "image/png";
 export default function Image() {
   return generateOgImage({
     title: "Terminal Velocity",
-    subtitle: "Master the terminal. Command your AI.",
+    subtitle: "Master the terminal. Learn by doing.",
   });
 }

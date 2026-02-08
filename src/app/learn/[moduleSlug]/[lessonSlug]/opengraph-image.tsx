@@ -18,7 +18,7 @@ export default async function Image({
   return generateOgImage({
     title: lesson?.title ?? "Terminal Velocity",
     subtitle:
-      lesson?.description ?? "Master the terminal. Command your AI.",
+      lesson?.description ?? "Master the terminal. Learn by doing.",
     moduleNumber: moduleIndex !== -1 ? moduleIndex + 1 : undefined,
   });
 }

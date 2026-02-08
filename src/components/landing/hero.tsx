@@ -21,11 +21,11 @@ export function Hero() {
           className="mx-auto mt-6 max-w-2xl text-balance text-fg-muted"
           style={{ fontSize: "1.125rem", lineHeight: 1.7 }}
         >
-          Master the terminal.{" "}
-          <span className="text-fg">Command your AI.</span>{" "}
-          The free, interactive course that teaches terminal fundamentals
-          through hands-on practice — so you can confidently work with
-          CLI-based AI tools.
+          Stop copy-pasting commands you don&apos;t understand.{" "}
+          <span className="text-fg">
+            50 hands-on lessons that build real muscle memory
+          </span>
+          {" "}— right in your browser.
         </p>
 
         <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">

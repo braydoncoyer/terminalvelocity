@@ -3,15 +3,8 @@ const painPoints = [
     label: "Copy-pasting commands from Stack Overflow without understanding them",
   },
   {
-    label: "claude-codex-pain-point",
-    render: (
-      <>
-        Feeling lost when AI tools like{" "}
-        <span className="font-semibold" style={{ color: "#E07A5F" }}>Claude Code</span> or{" "}
-        <span className="font-semibold" style={{ color: "#A970FF" }}>Codex</span>{" "}
-        drop you into a terminal
-      </>
-    ),
+    label:
+      "Feeling lost every time a tutorial drops you into a terminal",
   },
   {
     label: 'Googling "how to change directory" for the fifth time this month',
@@ -62,11 +55,8 @@ export function ProblemSection() {
         <div className="space-y-4 text-fg-muted" style={{ fontSize: "1rem", lineHeight: 1.75 }}>
           <p>
             This is the awkward in-between that most developers get stuck in.
-            And now, with AI-powered CLI tools like{" "}
-            <span className="font-semibold" style={{ color: "#E07A5F" }}>Claude Code</span> and{" "}
-            <span className="font-semibold" style={{ color: "#A970FF" }}>Codex</span>{" "}
-            expecting you to work in the terminal, the gap feels bigger than
-            ever.
+            The tools keep assuming you know the terminal, and the gap keeps
+            getting wider.
           </p>
         </div>
 
@@ -85,7 +75,7 @@ export function ProblemSection() {
                   className="mt-1.5 block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-error/70"
                   aria-hidden="true"
                 />
-                {"render" in point ? point.render : point.label}
+                {point.label}
               </li>
             ))}
           </ul>
