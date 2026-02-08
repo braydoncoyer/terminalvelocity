@@ -7,16 +7,14 @@ export function Hero() {
       <div className="hero-atmosphere" aria-hidden="true" />
 
       <div className="relative z-10 mx-auto max-w-3xl text-center">
-        {/* Terminal prompt accent */}
-        <p className="mb-6 font-mono text-sm tracking-wider text-accent">
-          $ learn terminal
-        </p>
-
         <h1
-          className="font-[family-name:var(--font-display)] tracking-tight text-fg"
+          className="flex items-center justify-center gap-4 tracking-tight text-fg"
           style={{ fontSize: "clamp(3rem, 8vw, 5rem)", lineHeight: 1.1 }}
         >
-          Terminal Velocity
+          <span className="font-mono font-bold text-accent">{">"}_</span>
+          <span className="font-[family-name:var(--font-display)]">
+            Terminal Velocity
+          </span>
         </h1>
 
         <p

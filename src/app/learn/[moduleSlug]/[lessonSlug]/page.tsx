@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
@@ -17,6 +18,23 @@ interface LessonPageProps {
     moduleSlug: string;
     lessonSlug: string;
   }>;
+}
+
+export async function generateMetadata({
+  params,
+}: LessonPageProps): Promise<Metadata> {
+  const { moduleSlug, lessonSlug } = await params;
+  const lesson = getLesson(moduleSlug, lessonSlug);
+  const mod = getModule(moduleSlug);
+
+  if (!lesson) return {};
+
+  const title = `${lesson.title} — ${mod?.title ?? "Terminal Velocity"}`;
+
+  return {
+    title,
+    description: lesson.description,
+  };
 }
 
 export default async function LessonPage({ params }: LessonPageProps) {
