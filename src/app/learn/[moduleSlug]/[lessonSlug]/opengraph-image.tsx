@@ -5,6 +5,15 @@ export const alt = "Terminal Velocity — Lesson";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+export function generateStaticParams() {
+  return modules.flatMap((mod) =>
+    mod.lessons.map((lesson) => ({
+      moduleSlug: mod.slug,
+      lessonSlug: lesson.slug,
+    }))
+  );
+}
+
 export default async function Image({
   params,
 }: {

@@ -6,6 +6,7 @@ import {
   getModule,
   getNextLesson,
   getPrevLesson,
+  modules,
 } from "@/lib/lessons/curriculum";
 import { LessonContent } from "@/components/course/lesson-content";
 import { LessonTerminalIsland } from "@/components/course/lesson-terminal-island";
@@ -37,6 +38,15 @@ export async function generateMetadata({
   };
 }
 
+export function generateStaticParams() {
+  return modules.flatMap((mod) =>
+    mod.lessons.map((lesson) => ({
+      moduleSlug: mod.slug,
+      lessonSlug: lesson.slug,
+    }))
+  );
+}
+
 export default async function LessonPage({ params }: LessonPageProps) {
   const { moduleSlug, lessonSlug } = await params;
 
@@ -49,8 +59,55 @@ export default async function LessonPage({ params }: LessonPageProps) {
 
   const compositeSlug = `${moduleSlug}/${lessonSlug}`;
 
+  const baseUrl = "https://terminalvelocitycourse.com";
+  const lessonUrl = `${baseUrl}/learn/${moduleSlug}/${lessonSlug}`;
+
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "LearningResource",
+      name: lesson.title,
+      description: lesson.description,
+      url: lessonUrl,
+      isPartOf: {
+        "@type": "Course",
+        name: "Terminal Velocity",
+        url: `${baseUrl}/learn`,
+      },
+      educationalLevel: "Beginner",
+      isAccessibleForFree: true,
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Course",
+          item: `${baseUrl}/learn`,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: mod?.title ?? moduleSlug,
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: lesson.title,
+          item: lessonUrl,
+        },
+      ],
+    },
+  ];
+
   return (
     <div className="max-w-4xl mx-auto px-4 pt-14 pb-8 sm:px-6 sm:pt-8 lg:py-12 space-y-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Set current lesson in progress store */}
       <LessonCurrentSetter slug={compositeSlug} />
 

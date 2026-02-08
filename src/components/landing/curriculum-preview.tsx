@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { modules } from "@/lib/lessons/curriculum";
 
 export function CurriculumPreview() {
@@ -75,7 +76,12 @@ export function CurriculumPreview() {
                         <span className="mt-0.5 font-mono text-xs text-fg-muted/50">
                           {moduleIndex + 1}.{lessonIndex + 1}
                         </span>
-                        <span>{lesson.title}</span>
+                        <Link
+                          href={`/learn/${mod.slug}/${lesson.slug}`}
+                          className="hover:text-fg transition-colors"
+                        >
+                          {lesson.title}
+                        </Link>
                       </li>
                     ))}
                   </ol>

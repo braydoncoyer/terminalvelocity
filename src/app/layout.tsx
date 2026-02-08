@@ -17,9 +17,13 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://terminalvelocitycourse.com"),
   title: "Terminal Velocity — Master the Terminal",
   description:
     "A free, interactive course that teaches terminal fundamentals through hands-on practice in a simulated terminal.",
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({
@@ -33,6 +37,19 @@ export default function RootLayout({
       className={`dark ${instrumentSerif.variable} ${jetbrainsMono.variable}`}
     >
       <body className="antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "Terminal Velocity",
+              url: "https://terminalvelocitycourse.com",
+              description:
+                "A free, interactive course that teaches terminal fundamentals through hands-on practice in a simulated terminal.",
+            }),
+          }}
+        />
         <a href="#main-content" className="skip-to-content">
           Skip to content
         </a>
