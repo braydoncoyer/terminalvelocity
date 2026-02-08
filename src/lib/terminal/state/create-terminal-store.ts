@@ -2,6 +2,7 @@ import { createStore } from "zustand/vanilla";
 import { immer } from "zustand/middleware/immer";
 import { VirtualFileSystem } from "../filesystem/virtual-fs";
 import { execute } from "../executor/executor";
+import { expandHistoryBangs } from "../history/command-history";
 import { OutputLine } from "@/types/common";
 import { TerminalStore } from "./types";
 
@@ -16,17 +17,46 @@ function nextLineId(): string {
 export interface TerminalStoreOptions {
   fs: VirtualFileSystem;
   onCommand?: (raw: string, output: string, error: string, history: string[]) => void;
+  initialInput?: string;
+  initialHistory?: string[];
+  initialCommands?: string[];
 }
 
 export function createTerminalStore(options: TerminalStoreOptions) {
-  const { fs, onCommand } = options;
+  const { fs, onCommand, initialInput, initialHistory, initialCommands } = options;
+
+  // Pre-execute initial commands to build output lines and history
+  const bootLines: OutputLine[] = [];
+  const bootHistory: string[] = initialHistory ? [...initialHistory] : [];
+  if (initialCommands) {
+    for (const cmd of initialCommands) {
+      const prompt = `user@terminal:${fs.getDisplayPath()}$ `;
+      bootLines.push({ id: nextLineId(), type: "stdin", content: prompt + cmd });
+      const result = execute(cmd, fs, {
+        HOME: "/home/user",
+        USER: "user",
+        PATH: "/usr/local/bin:/usr/bin:/bin",
+        SHELL: "/bin/bash",
+        TERM: "xterm-256color",
+      }, bootHistory);
+      if (result.output && result.output !== "\x1Bclear") {
+        bootLines.push({ id: nextLineId(), type: "stdout", content: result.output });
+      }
+      if (result.error) {
+        bootLines.push({ id: nextLineId(), type: "stderr", content: result.error });
+      }
+      if (bootHistory[bootHistory.length - 1] !== cmd) {
+        bootHistory.push(cmd);
+      }
+    }
+  }
 
   return createStore<TerminalStore>()(
     immer((set, get) => ({
-      outputLines: [],
-      inputValue: "",
-      cursorPosition: 0,
-      history: [],
+      outputLines: bootLines,
+      inputValue: initialInput ?? "",
+      cursorPosition: initialInput?.length ?? 0,
+      history: bootHistory,
       historyIndex: -1,
       suggestions: [],
       reverseSearchMode: false,
@@ -74,13 +104,16 @@ export function createTerminalStore(options: TerminalStoreOptions) {
         const state = get();
         const trimmed = raw.trim();
 
-        // Add input line to output
+        // Expand history bang shortcuts (!! !$ !n !cmd) before display
+        const bangExpanded = expandHistoryBangs(trimmed, state.history);
+
+        // Add input line to output (show expanded form)
         const prompt = `user@terminal:${fs.getDisplayPath()}$ `;
         set((s) => {
           s.outputLines.push({
             id: nextLineId(),
             type: "stdin",
-            content: prompt + trimmed,
+            content: prompt + bangExpanded,
           });
           s.inputValue = "";
           s.cursorPosition = 0;
@@ -91,17 +124,17 @@ export function createTerminalStore(options: TerminalStoreOptions) {
           s.reverseSearchResult = null;
         });
 
-        if (!trimmed) return;
+        if (!bangExpanded) return;
 
-        // Add to history
+        // Add expanded form to history (matches real bash behavior)
         set((s) => {
-          if (s.history[s.history.length - 1] !== trimmed) {
-            s.history.push(trimmed);
+          if (s.history[s.history.length - 1] !== bangExpanded) {
+            s.history.push(bangExpanded);
           }
         });
 
         // Handle alias expansion
-        const expandedRaw = expandAliases(trimmed, state.env);
+        const expandedRaw = expandAliases(bangExpanded, state.env);
 
         // Execute the command
         const result = execute(expandedRaw, fs, state.env, state.history);

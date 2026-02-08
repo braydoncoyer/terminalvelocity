@@ -1,4 +1,9 @@
 import type { ModuleConfig } from "@/lib/lessons/types";
+import { parseLessonMarkdown } from "@/lib/lessons/parser/parse-lesson-markdown";
+
+import realWorldWorkflowMd from "./content/real-world-workflow.md";
+import confidenceCheckMd from "./content/confidence-check.md";
+import cheatSheetMd from "./content/cheat-sheet.md";
 
 const puttingItTogetherModule: ModuleConfig = {
   slug: "putting-it-together",
@@ -11,44 +16,7 @@ const puttingItTogetherModule: ModuleConfig = {
       title: "Real-World Workflow",
       description:
         "Simulate a multi-step developer workflow: navigate a project, investigate logs, and extract data.",
-      content: [
-        {
-          type: "text",
-          content:
-            "Everything you've learned — navigation, file operations, piping, redirection — comes together in real developer workflows. In this lesson you'll step into a realistic scenario: you've just joined a project and need to investigate a production issue. A user reported errors, and your job is to find out what's going wrong.",
-        },
-        {
-          type: "text",
-          content:
-            "The project directory contains source code, configuration, and a `logs/` folder with an `access.log` file. The log is filled with INFO, WARN, and ERROR lines. Your mission: navigate to the project, search the logs for errors, save those errors to a file, and count how many there are. This is exactly how developers debug production issues every day.",
-        },
-        {
-          type: "code",
-          content:
-            '# Step 1: Navigate to the project\ncd webapp\n\n# Step 2: Search the logs for errors\ngrep "ERROR" logs/access.log\n\n# Step 3: Save errors to a file\ngrep "ERROR" logs/access.log > errors.txt\n\n# Step 4: Count the errors\nwc -l errors.txt',
-          language: "bash",
-        },
-        {
-          type: "text",
-          content:
-            "Notice how each step builds on skills from a different module. Navigation from Module 2. Reading files and `grep` from Modules 3 and 5. Redirection from Module 5. Counting with `wc` from Module 5 again. None of these steps are complicated on their own — the power is in combining them into a coherent workflow.",
-        },
-        {
-          type: "tip",
-          content:
-            "In real life, you'd often pipe these together: `grep \"ERROR\" logs/access.log | tee errors.txt | wc -l`. The `tee` command saves to a file AND passes output through the pipe. But don't worry about doing everything in one line — clarity beats cleverness.",
-        },
-        {
-          type: "text",
-          content:
-            "Complete all four goals below: navigate to the project, search the logs, save the errors to a file, and count them. Take it step by step, just like you would on the job.",
-        },
-        {
-          type: "windows-callout",
-          content:
-            "This workflow translates directly to Windows. In PowerShell: `Set-Location webapp`, `Select-String 'ERROR' logs/access.log`, `Select-String 'ERROR' logs/access.log | Out-File errors.txt`, and `(Get-Content errors.txt).Count`. Same logic, different syntax.",
-        },
-      ],
+      content: parseLessonMarkdown(realWorldWorkflowMd),
       fsSeed: {
         "webapp": null,
         "webapp/src": null,
@@ -104,39 +72,7 @@ const puttingItTogetherModule: ModuleConfig = {
       title: "Terminal Confidence Check",
       description:
         "Final challenge: find hidden files, organize data, create directories, and build pipelines.",
-      content: [
-        {
-          type: "text",
-          content:
-            "This is the final challenge. You have a `challenge/` directory with a realistic project structure — nested folders, hidden files, data files, and more. Your mission has five objectives that draw from everything you've learned across all modules. There are no step-by-step instructions this time. You know enough to figure it out.",
-        },
-        {
-          type: "text",
-          content:
-            "Here's what you need to accomplish:\n\n1. **Find the hidden file** — There's a file called `.secret-key` buried somewhere in the nested directories. Use `ls -a` or `find` to track it down.\n2. **Create a new directory** — Create a directory called `challenge/results` to store your work.\n3. **Copy a file** — Copy `challenge/data.csv` into your new `challenge/results` directory.\n4. **Use piping** — Use a pipe to process some data (for example, `cat` the CSV and `grep` for specific entries, or `sort` and `uniq` the data).\n5. **Navigate deep** — `cd` into the `challenge/config/settings` directory.",
-        },
-        {
-          type: "code",
-          content:
-            '# Some commands that might help:\nls -la challenge/               # see what\'s inside (including hidden)\nls -aR challenge/               # recursive listing to find hidden files\nfind challenge/ -name ".*"      # find hidden files\nmkdir challenge/results         # create a new directory\ncp challenge/data.csv challenge/results/data.csv\ncat challenge/data.csv | sort\ncd challenge/config/settings',
-          language: "bash",
-        },
-        {
-          type: "text",
-          content:
-            "The five goals can be completed in any order. Take your time, explore the filesystem, and use everything you've learned. If you get stuck, try `ls` to look around, `pwd` to check where you are, and `cd ..` to back up.",
-        },
-        {
-          type: "tip",
-          content:
-            "Remember: hidden files start with a dot (.) and only show up when you use `ls -a`. The `find` command with `-name \".*\"` is a quick way to locate hidden files in a directory tree. Don't forget `ls -aR` for a recursive listing that includes hidden files.",
-        },
-        {
-          type: "windows-callout",
-          content:
-            "On Windows, hidden files have a \"hidden\" attribute rather than a dot prefix. In PowerShell, `Get-ChildItem -Force -Recurse` reveals hidden items. In WSL, hidden files follow the Linux dot convention.",
-        },
-      ],
+      content: parseLessonMarkdown(confidenceCheckMd),
       fsSeed: {
         "challenge": null,
         "challenge/data.csv":
@@ -220,140 +156,7 @@ const puttingItTogetherModule: ModuleConfig = {
       description:
         "A comprehensive reference card for every command and shortcut you've learned.",
       informational: true,
-      content: [
-        {
-          type: "text",
-          content:
-            "Congratulations on completing Terminal Velocity! Below is a comprehensive reference of everything you've learned. Bookmark this page, print it out, or screenshot it. This is your terminal cheat sheet -- the commands and patterns that will serve you every day as a developer.",
-        },
-
-        // ── Navigation ──
-        {
-          type: "text",
-          content: "## Navigation",
-        },
-        {
-          type: "code",
-          content:
-            "pwd                         # Print working directory (where am I?)\ncd dirname                  # Change into a directory\ncd ..                       # Go up one level\ncd ../..                    # Go up two levels\ncd ~                        # Go to home directory\ncd -                        # Go to previous directory\ncd /                        # Go to root directory\nls                          # List files in current directory\nls -l                       # Long format (permissions, size, date)\nls -a                       # Show hidden files (dotfiles)\nls -la                      # Long format + hidden files\nls -R                       # List recursively (all subdirectories)",
-          language: "bash",
-        },
-
-        // ── File Operations ──
-        {
-          type: "text",
-          content: "## File Operations",
-        },
-        {
-          type: "code",
-          content:
-            "touch file.txt              # Create an empty file\nmkdir dirname               # Create a directory\nmkdir -p a/b/c              # Create nested directories\ncp source dest              # Copy a file\ncp -r srcdir/ destdir/      # Copy a directory recursively\nmv oldname newname          # Rename (or move) a file\nmv file.txt dir/            # Move file into a directory\nrm file.txt                 # Delete a file (permanent!)\nrm -r dirname/              # Delete a directory and contents\nrmdir empty-dir/            # Delete an empty directory only",
-          language: "bash",
-        },
-
-        // ── Viewing Files ──
-        {
-          type: "text",
-          content: "## Viewing Files",
-        },
-        {
-          type: "code",
-          content:
-            "cat file.txt                # Print entire file\nhead file.txt               # Print first 10 lines\nhead -n 5 file.txt          # Print first 5 lines\ntail file.txt               # Print last 10 lines\ntail -n 5 file.txt          # Print last 5 lines\ntail -f logfile.log         # Follow a file (live updates)\nless file.txt               # Scrollable file viewer (q to quit)",
-          language: "bash",
-        },
-
-        // ── Keyboard Shortcuts ──
-        {
-          type: "text",
-          content: "## Keyboard Shortcuts",
-        },
-        {
-          type: "code",
-          content:
-            "Tab                         # Autocomplete file/command names\nUp Arrow                    # Previous command from history\nDown Arrow                  # Next command from history\nCtrl + C                    # Cancel current command\nCtrl + L                    # Clear the screen\nCtrl + A                    # Jump to beginning of line\nCtrl + E                    # Jump to end of line\nCtrl + W                    # Delete word before cursor\nCtrl + U                    # Delete from cursor to start of line\nCtrl + K                    # Delete from cursor to end of line\nCtrl + R                    # Reverse search command history",
-          language: "bash",
-        },
-
-        // ── Piping & Redirection ──
-        {
-          type: "text",
-          content: "## Piping & Redirection",
-        },
-        {
-          type: "code",
-          content:
-            'command > file.txt          # Redirect output to file (overwrite)\ncommand >> file.txt         # Append output to file\ncommand1 | command2         # Pipe: send output to next command\ngrep "pattern" file.txt     # Search for text in a file\ngrep -i "pattern" file.txt  # Case-insensitive search\ngrep -c "pattern" file.txt  # Count matching lines\nwc -l file.txt              # Count lines\nwc -w file.txt              # Count words\nsort file.txt               # Sort lines alphabetically\nsort -n file.txt            # Sort numerically\nsort -r file.txt            # Sort in reverse order\nuniq                        # Remove adjacent duplicate lines\nuniq -c                     # Count occurrences of each line',
-          language: "bash",
-        },
-
-        // ── Common Pipe Patterns ──
-        {
-          type: "text",
-          content: "## Common Pipe Patterns",
-        },
-        {
-          type: "code",
-          content:
-            'cat file | grep "term"                  # Search a file\nls dir/ | wc -l                         # Count files in directory\ncat file | sort | uniq                  # Get unique sorted lines\ncat file | sort | uniq -c | sort -rn    # Frequency count (most common first)\ngrep "ERROR" log.txt | wc -l            # Count errors in a log\ncat data.csv | head -n 1                # View CSV headers',
-          language: "bash",
-        },
-
-        // ── Environment Variables ──
-        {
-          type: "text",
-          content: "## Environment Variables",
-        },
-        {
-          type: "code",
-          content:
-            'echo $HOME                  # Print home directory path\necho $PATH                  # Print executable search path\necho $USER                  # Print current username\nMY_VAR="hello"              # Set a shell variable\nexport MY_VAR="hello"       # Set an environment variable\nenv                         # List all environment variables\nwhich command               # Show where a command lives in PATH',
-          language: "bash",
-        },
-
-        // ── Getting Help ──
-        {
-          type: "text",
-          content: "## Getting Help",
-        },
-        {
-          type: "code",
-          content:
-            "command --help              # Quick usage summary\nman command                 # Full manual page (q to quit)\nwhich command               # Find where a command is installed\ntype command                # Show what type of command it is",
-          language: "bash",
-        },
-
-        // ── Pro Tips ──
-        {
-          type: "text",
-          content: "## Pro Tips",
-        },
-        {
-          type: "tip",
-          content:
-            "Use Tab completion aggressively. Type the first few characters and press Tab -- the terminal will complete the rest. Double-tap Tab to see all possible completions. This alone will double your speed.",
-        },
-        {
-          type: "tip",
-          content:
-            "Use `history | grep \"something\"` to search your command history. Find that complicated command you ran two days ago without remembering the exact syntax.",
-        },
-        {
-          type: "tip",
-          content:
-            "Use `!!` to repeat the last command. Forgot to type `sudo`? Just run `sudo !!` to re-run the last command with elevated privileges.",
-        },
-        {
-          type: "tip",
-          content:
-            "Create aliases for commands you type frequently. Add `alias ll='ls -la'` to your shell configuration file (`.bashrc` or `.zshrc`) to save keystrokes every day.",
-        },
-        {
-          type: "text",
-          content:
-            "You now have the foundation to be productive in the terminal. These commands cover 90% of day-to-day developer terminal usage. The remaining 10% you'll pick up naturally as you encounter new tools and workflows. The most important thing is to keep practicing -- open a terminal, explore your filesystem, and build the muscle memory. You've got this.",
-        },
-      ],
+      content: parseLessonMarkdown(cheatSheetMd),
       fsSeed: {},
       goals: [
         {

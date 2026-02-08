@@ -52,10 +52,11 @@ export function LessonTerminalIsland({
         goals={lesson.goals}
         onComplete={handleComplete}
         title="Terminal"
+        shareButton={<ShareButton lessonTitle={lessonTitle} />}
+        initialInput={lesson.initialInput}
+        initialHistory={lesson.initialHistory}
+        initialCommands={lesson.initialCommands}
       />
-      <div className="mt-2 flex justify-end">
-        <ShareButton lessonTitle={lessonTitle} />
-      </div>
       <Celebration
         show={showCelebration}
         lessonTitle={lessonTitle}

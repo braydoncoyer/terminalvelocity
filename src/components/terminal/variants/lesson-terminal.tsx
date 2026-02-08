@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { LessonTerminalProvider } from "../providers/lesson-terminal-provider";
 import { TerminalFrame } from "../terminal-frame";
 import { ValidationFeedback } from "../validation-feedback";
@@ -11,6 +12,10 @@ interface LessonTerminalProps {
   goals: Goal[];
   onComplete: () => void;
   title?: string;
+  shareButton?: ReactNode;
+  initialInput?: string;
+  initialHistory?: string[];
+  initialCommands?: string[];
 }
 
 export function LessonTerminal({
@@ -18,12 +23,19 @@ export function LessonTerminal({
   goals,
   onComplete,
   title,
+  shareButton,
+  initialInput,
+  initialHistory,
+  initialCommands,
 }: LessonTerminalProps) {
   return (
     <LessonTerminalProvider
       fsSeed={fsSeed}
       goals={goals}
       onComplete={onComplete}
+      initialInput={initialInput}
+      initialHistory={initialHistory}
+      initialCommands={initialCommands}
     >
       {({ fs, goalStates, isComplete, resetLesson }) => (
         <div className="flex flex-col gap-3">
@@ -33,17 +45,20 @@ export function LessonTerminal({
             </TerminalFrame>
           </div>
           <div className="flex items-center justify-between">
-            <button
-              onClick={resetLesson}
-              className="rounded border border-bg-3 px-3 py-1.5 text-xs text-fg-muted transition-colors duration-150 hover:border-fg-muted hover:text-fg"
-            >
-              Reset
-            </button>
-            {isComplete && (
-              <span className="text-sm text-success font-medium">
-                &#10003; Lesson Complete!
-              </span>
-            )}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={resetLesson}
+                className="rounded border border-bg-3 px-3 py-1.5 text-xs text-fg-muted transition-colors duration-150 hover:border-fg-muted hover:text-fg"
+              >
+                Reset
+              </button>
+              {isComplete && (
+                <span className="text-xs text-success font-medium">
+                  &#10003; Complete
+                </span>
+              )}
+            </div>
+            {shareButton}
           </div>
         </div>
       )}

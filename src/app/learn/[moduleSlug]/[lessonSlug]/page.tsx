@@ -8,7 +8,7 @@ import {
 } from "@/lib/lessons/curriculum";
 import { LessonContent } from "@/components/course/lesson-content";
 import { LessonTerminalIsland } from "@/components/course/lesson-terminal-island";
-import { NextLessonButton } from "@/components/course/next-lesson-button";
+import { LessonNav } from "@/components/course/lesson-nav";
 import { CheatSheetDownload } from "@/components/course/cheat-sheet-download";
 import { LessonCurrentSetter } from "./lesson-current-setter";
 
@@ -81,60 +81,15 @@ export default async function LessonPage({ params }: LessonPageProps) {
         </div>
       )}
 
-      {/* Next lesson button */}
+      {/* Lesson navigation */}
       <div className="pt-4">
-        <NextLessonButton moduleSlug={moduleSlug} lessonSlug={lessonSlug} />
+        <LessonNav
+          compositeSlug={compositeSlug}
+          prev={prev}
+          next={next}
+          informational={lesson.informational}
+        />
       </div>
-
-      {/* Prev / Next navigation */}
-      <nav aria-label="Lesson navigation" className="flex items-center justify-between border-t border-bg-3 pt-6">
-        {prev ? (
-          <Link
-            href={`/learn/${prev.moduleSlug}/${prev.lessonSlug}`}
-            className="flex items-center gap-2 text-xs text-fg-muted hover:text-fg transition-colors"
-          >
-            <svg
-              className="w-3 h-3"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M11 17l-5-5m0 0l5-5m-5 5h12"
-              />
-            </svg>
-            <span>Previous</span>
-          </Link>
-        ) : (
-          <div />
-        )}
-        {next ? (
-          <Link
-            href={`/learn/${next.moduleSlug}/${next.lessonSlug}`}
-            className="flex items-center gap-2 text-xs text-fg-muted hover:text-fg transition-colors"
-          >
-            <span>Next</span>
-            <svg
-              className="w-3 h-3"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              />
-            </svg>
-          </Link>
-        ) : (
-          <div />
-        )}
-      </nav>
     </div>
   );
 }

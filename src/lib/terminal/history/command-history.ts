@@ -37,5 +37,15 @@ export function expandHistoryBangs(
     return history[idx] ?? "";
   });
 
+  // !abc → most recent command starting with "abc"
+  input = input.replace(/!([a-zA-Z]\w*)/g, (match, prefix) => {
+    for (let i = history.length - 1; i >= 0; i--) {
+      if (history[i].startsWith(prefix)) {
+        return history[i];
+      }
+    }
+    return match;
+  });
+
   return input;
 }

@@ -15,6 +15,9 @@ interface LessonTerminalProviderProps {
   fsSeed: FSSeed;
   goals: Goal[];
   onComplete: () => void;
+  initialInput?: string;
+  initialHistory?: string[];
+  initialCommands?: string[];
   children: (props: {
     fs: VirtualFileSystem;
     goalStates: GoalState[];
@@ -27,6 +30,9 @@ export function LessonTerminalProvider({
   fsSeed,
   goals,
   onComplete,
+  initialInput,
+  initialHistory,
+  initialCommands,
   children,
 }: LessonTerminalProviderProps) {
   const [fs, setFs] = useState(() => VirtualFileSystem.fromSeed(fsSeed));
@@ -71,7 +77,7 @@ export function LessonTerminalProvider({
   }, [fsSeed, goals]);
 
   return (
-    <TerminalProvider fs={fs} onCommand={handleCommand}>
+    <TerminalProvider fs={fs} onCommand={handleCommand} initialInput={initialInput} initialHistory={initialHistory} initialCommands={initialCommands}>
       {children({ fs, goalStates, isComplete, resetLesson })}
     </TerminalProvider>
   );

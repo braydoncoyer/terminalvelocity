@@ -159,6 +159,7 @@ export function TerminalFrame({ fs, title, children }: TerminalFrameProps) {
             inputValue.slice(0, cursorPosition) +
             inputValue.slice(cursorPosition + 1);
           setInputValue(newValue);
+          setCursorPosition(cursorPosition);
         }
         return;
       }

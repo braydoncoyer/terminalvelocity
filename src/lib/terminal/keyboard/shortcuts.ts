@@ -15,6 +15,26 @@ export interface ShortcutContext {
 
 export type ShortcutHandler = (ctx: ShortcutContext) => void;
 
+function moveForwardOneWord(ctx: ShortcutContext) {
+  const { inputValue, cursorPosition } = ctx;
+  let pos = cursorPosition;
+  // Skip non-word chars (spaces, punctuation, slashes, dots)
+  while (pos < inputValue.length && !/\w/.test(inputValue[pos])) pos++;
+  // Skip word chars (alphanumeric + underscore)
+  while (pos < inputValue.length && /\w/.test(inputValue[pos])) pos++;
+  ctx.setCursorPosition(pos);
+}
+
+function moveBackwardOneWord(ctx: ShortcutContext) {
+  const { inputValue, cursorPosition } = ctx;
+  let pos = cursorPosition;
+  // Skip non-word chars backwards (spaces, punctuation, slashes, dots)
+  while (pos > 0 && !/\w/.test(inputValue[pos - 1])) pos--;
+  // Skip word chars backwards (alphanumeric + underscore)
+  while (pos > 0 && /\w/.test(inputValue[pos - 1])) pos--;
+  ctx.setCursorPosition(pos);
+}
+
 const shortcutMap: Record<string, ShortcutHandler> = {
   "ctrl+a": (ctx) => {
     ctx.setCursorPosition(0);
@@ -23,31 +43,25 @@ const shortcutMap: Record<string, ShortcutHandler> = {
     ctx.setCursorPosition(ctx.inputValue.length);
   },
   "alt+f": (ctx) => {
-    // Move forward one word
-    const { inputValue, cursorPosition } = ctx;
-    let pos = cursorPosition;
-    // Skip non-word chars
-    while (pos < inputValue.length && /\s/.test(inputValue[pos])) pos++;
-    // Skip word chars
-    while (pos < inputValue.length && !/\s/.test(inputValue[pos])) pos++;
-    ctx.setCursorPosition(pos);
+    moveForwardOneWord(ctx);
+  },
+  "alt+arrowright": (ctx) => {
+    moveForwardOneWord(ctx);
   },
   "alt+b": (ctx) => {
-    // Move backward one word
-    const { inputValue, cursorPosition } = ctx;
-    let pos = cursorPosition;
-    // Skip non-word chars backwards
-    while (pos > 0 && /\s/.test(inputValue[pos - 1])) pos--;
-    // Skip word chars backwards
-    while (pos > 0 && !/\s/.test(inputValue[pos - 1])) pos--;
-    ctx.setCursorPosition(pos);
+    moveBackwardOneWord(ctx);
+  },
+  "alt+arrowleft": (ctx) => {
+    moveBackwardOneWord(ctx);
   },
   "ctrl+w": (ctx) => {
-    // Delete word before cursor
+    // Delete word before cursor (same boundaries as Alt+B)
     const { inputValue, cursorPosition } = ctx;
     let pos = cursorPosition;
-    while (pos > 0 && /\s/.test(inputValue[pos - 1])) pos--;
-    while (pos > 0 && !/\s/.test(inputValue[pos - 1])) pos--;
+    // Skip non-word chars backwards (spaces, punctuation, slashes, dots)
+    while (pos > 0 && !/\w/.test(inputValue[pos - 1])) pos--;
+    // Skip word chars backwards (alphanumeric + underscore)
+    while (pos > 0 && /\w/.test(inputValue[pos - 1])) pos--;
     const newValue = inputValue.slice(0, pos) + inputValue.slice(cursorPosition);
     ctx.setInputValue(newValue);
     ctx.setCursorPosition(pos);
@@ -107,7 +121,14 @@ export function buildShortcutKey(e: KeyboardEvent): string | null {
 
   if (parts.length === 0) return null;
 
-  const key = e.key.toLowerCase();
+  // On macOS, Alt+letter produces special characters (e.g., Alt+F → "ƒ",
+  // Alt+B → "∫"). Use e.code to get the actual key pressed.
+  let key: string;
+  if (e.altKey && e.code.startsWith("Key")) {
+    key = e.code.slice(3).toLowerCase();
+  } else {
+    key = e.key.toLowerCase();
+  }
   parts.push(key);
   return parts.join("+");
 }

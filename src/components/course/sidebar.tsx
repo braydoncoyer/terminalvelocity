@@ -1,12 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { modules } from "@/lib/lessons/curriculum";
 import { useProgressStore } from "@/lib/progress/store";
 import { formatStreak } from "@/lib/progress/streak";
 import { ProgressBar } from "./progress-bar";
+
+function getModuleForPath(pathname: string): string | null {
+  for (const mod of modules) {
+    for (const lesson of mod.lessons) {
+      if (pathname === `/learn/${mod.slug}/${lesson.slug}`) {
+        return mod.slug;
+      }
+    }
+  }
+  return null;
+}
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -15,20 +26,23 @@ export function Sidebar() {
   const [open, setOpen] = useState(false);
   const [expandedModules, setExpandedModules] = useState<Set<string>>(() => {
     // Auto-expand the module that contains the current lesson
-    const set = new Set<string>();
-    for (const mod of modules) {
-      for (const lesson of mod.lessons) {
-        if (pathname === `/learn/${mod.slug}/${lesson.slug}`) {
-          set.add(mod.slug);
-        }
-      }
-    }
+    const slug = getModuleForPath(pathname);
+    if (slug) return new Set([slug]);
     // If nothing matched, expand the first module
-    if (set.size === 0 && modules.length > 0) {
-      set.add(modules[0].slug);
-    }
-    return set;
+    if (modules.length > 0) return new Set([modules[0].slug]);
+    return new Set();
   });
+
+  // When navigating to a lesson, collapse other modules and expand the active one
+  useEffect(() => {
+    const slug = getModuleForPath(pathname);
+    if (slug) {
+      setExpandedModules((prev) => {
+        if (prev.size === 1 && prev.has(slug)) return prev;
+        return new Set([slug]);
+      });
+    }
+  }, [pathname]);
 
   function toggleModule(slug: string) {
     setExpandedModules((prev) => {

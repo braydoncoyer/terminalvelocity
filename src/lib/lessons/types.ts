@@ -6,7 +6,8 @@ export type ContentBlockType =
   | "code"
   | "tip"
   | "warning"
-  | "windows-callout";
+  | "windows-callout"
+  | "power-tip";
 
 export interface ContentSection {
   type: ContentBlockType;
@@ -23,6 +24,12 @@ export interface LessonConfig {
   goals: Goal[];
   /** If true, lesson has no interactive terminal (informational only) */
   informational?: boolean;
+  /** Pre-populate the terminal input with this value when the lesson loads */
+  initialInput?: string;
+  /** Seed the terminal history so commands appear in Up arrow and `history` */
+  initialHistory?: string[];
+  /** Commands to execute on load — produces visible output and history entries */
+  initialCommands?: string[];
 }
 
 export interface ModuleConfig {

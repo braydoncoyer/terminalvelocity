@@ -20,7 +20,7 @@ export function TerminalInputLine() {
   const inputValue = useInputValue();
   const cursorPos = useCursorPosition();
   const cwd = useCwd();
-  const { setInputValue, setCursorPosition, executeCommand } = useTerminalActions();
+  const { setInputValue, executeCommand } = useTerminalActions();
   const hiddenInputRef = useRef<HTMLInputElement>(null);
 
   const beforeCursor = inputValue.slice(0, cursorPos);
@@ -55,12 +55,6 @@ export function TerminalInputLine() {
         value={inputValue}
         onChange={(e) => {
           setInputValue(e.target.value);
-        }}
-        onSelect={(e) => {
-          const target = e.target as HTMLInputElement;
-          if (target.selectionStart !== null) {
-            setCursorPosition(target.selectionStart);
-          }
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter") {

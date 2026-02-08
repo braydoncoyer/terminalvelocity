@@ -18,9 +18,9 @@ function ContentBlock({ section }: { section: ContentSection }) {
   switch (section.type) {
     case "text":
       return (
-        <p
+        <div
           className="text-sm leading-relaxed text-fg"
-          dangerouslySetInnerHTML={{ __html: formatInlineMarkdown(section.content) }}
+          dangerouslySetInnerHTML={{ __html: formatBlockMarkdown(section.content) }}
         />
       );
 
@@ -39,7 +39,7 @@ function ContentBlock({ section }: { section: ContentSection }) {
           <div className="flex items-start gap-2">
             <span className="text-success text-sm mt-0.5 shrink-0">&#9679;</span>
             <p
-              className="text-sm leading-relaxed text-fg"
+              className="text-sm leading-relaxed text-fg whitespace-pre-line"
               dangerouslySetInnerHTML={{ __html: formatInlineMarkdown(section.content) }}
             />
           </div>
@@ -52,7 +52,20 @@ function ContentBlock({ section }: { section: ContentSection }) {
           <div className="flex items-start gap-2">
             <span className="text-warning text-sm mt-0.5 shrink-0">&#9888;</span>
             <p
-              className="text-sm leading-relaxed text-fg"
+              className="text-sm leading-relaxed text-fg whitespace-pre-line"
+              dangerouslySetInnerHTML={{ __html: formatInlineMarkdown(section.content) }}
+            />
+          </div>
+        </div>
+      );
+
+    case "power-tip":
+      return (
+        <div className="rounded-lg border border-power/20 bg-power/5 px-4 py-3">
+          <div className="flex items-start gap-2">
+            <span className="text-power text-sm mt-0.5 shrink-0">&#9889;</span>
+            <p
+              className="text-sm leading-relaxed text-fg whitespace-pre-line"
               dangerouslySetInnerHTML={{ __html: formatInlineMarkdown(section.content) }}
             />
           </div>
@@ -67,7 +80,7 @@ function ContentBlock({ section }: { section: ContentSection }) {
               WIN
             </span>
             <p
-              className="text-sm leading-relaxed text-fg"
+              className="text-sm leading-relaxed text-fg whitespace-pre-line"
               dangerouslySetInnerHTML={{ __html: formatInlineMarkdown(section.content) }}
             />
           </div>
@@ -95,4 +108,49 @@ function formatInlineMarkdown(text: string): string {
       /\[(.+?)\]\((.+?)\)/g,
       '<a href="$2" class="text-accent underline underline-offset-2 hover:text-accent/80">$1</a>'
     );
+}
+
+/**
+ * Block-level markdown formatter for text sections.
+ * Handles headings, unordered lists, ordered lists, and inline markdown.
+ */
+function formatBlockMarkdown(text: string): string {
+  const lines = text.split("\n");
+
+  // Check if this is an unordered list (all lines start with - or *)
+  const isUnorderedList = lines.every((l) => /^[-*] /.test(l));
+  if (isUnorderedList) {
+    const items = lines
+      .map((l) => l.replace(/^[-*] /, ""))
+      .map((l) => `<li>${formatInlineMarkdown(l)}</li>`)
+      .join("");
+    return `<ul class="list-disc list-inside space-y-1">${items}</ul>`;
+  }
+
+  // Check if this is an ordered list (all lines start with N.)
+  const isOrderedList = lines.every((l) => /^\d+\. /.test(l));
+  if (isOrderedList) {
+    const items = lines
+      .map((l) => l.replace(/^\d+\. /, ""))
+      .map((l) => `<li>${formatInlineMarkdown(l)}</li>`)
+      .join("");
+    return `<ol class="list-decimal list-inside space-y-1">${items}</ol>`;
+  }
+
+  // Check if this is a heading
+  const headingMatch = text.match(/^(#{1,4}) (.+)$/);
+  if (headingMatch) {
+    const level = headingMatch[1].length;
+    const content = formatInlineMarkdown(headingMatch[2]);
+    const styles: Record<number, string> = {
+      1: "text-lg font-bold text-fg",
+      2: "text-base font-semibold text-fg mt-2",
+      3: "text-sm font-semibold text-fg mt-1",
+      4: "text-sm font-medium text-fg-muted mt-1",
+    };
+    return `<h${level + 1} class="${styles[level] || styles[4]}">${content}</h${level + 1}>`;
+  }
+
+  // Default: inline markdown only
+  return formatInlineMarkdown(text);
 }
