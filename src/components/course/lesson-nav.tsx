@@ -51,7 +51,10 @@ export function LessonNav({ compositeSlug, prev, next, informational }: LessonNa
       )}
 
       {/* Right: upgrades from plain link → CTA → course complete */}
-      {isComplete && !next ? (
+      {!informational && isComplete ? (
+        /* Interactive lesson complete — terminal success screen handles navigation */
+        <div />
+      ) : isComplete && !next ? (
         <span className="text-xs text-success font-medium">
           &#10003; Course Complete
         </span>
@@ -74,14 +77,6 @@ export function LessonNav({ compositeSlug, prev, next, informational }: LessonNa
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         </button>
-      ) : isComplete && next ? (
-        <Link
-          href={`/learn/${next.moduleSlug}/${next.lessonSlug}`}
-          className="inline-flex items-center gap-1.5 rounded-md bg-accent px-3.5 py-1.5 text-xs font-medium text-white transition-colors hover:bg-accent/90"
-        >
-          <span>{nextLabel}</span>
-          {arrowRight}
-        </Link>
       ) : next ? (
         <Link
           href={`/learn/${next.moduleSlug}/${next.lessonSlug}`}

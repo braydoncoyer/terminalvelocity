@@ -24,9 +24,10 @@ interface TerminalFrameProps {
   fs: VirtualFileSystem;
   title?: string;
   children?: React.ReactNode;
+  takeoverContent?: React.ReactNode;
 }
 
-export function TerminalFrame({ fs, title, children }: TerminalFrameProps) {
+export function TerminalFrame({ fs, title, children, takeoverContent }: TerminalFrameProps) {
   const inputValue = useInputValue();
   const cursorPosition = useCursorPosition();
   const { setInputValue, setCursorPosition, executeCommand, clearOutput, setSuggestions, clearSuggestions } =
@@ -209,15 +210,21 @@ export function TerminalFrame({ fs, title, children }: TerminalFrameProps) {
       role="application"
       aria-label="Terminal"
       tabIndex={0}
-      onKeyDownCapture={handleKeyDown}
+      onKeyDownCapture={takeoverContent ? undefined : handleKeyDown}
       className="flex flex-col overflow-hidden rounded-lg border border-bg-3 bg-bg-1 focus:outline-2 focus:outline-offset-2 focus:outline-accent"
     >
       <TerminalToolbar title={title} />
-      <TerminalOutput />
-      <TerminalSuggestions />
-      <TerminalReverseSearch />
-      <TerminalInputLine />
-      {children}
+      {takeoverContent ? (
+        takeoverContent
+      ) : (
+        <>
+          <TerminalOutput />
+          <TerminalSuggestions />
+          <TerminalReverseSearch />
+          <TerminalInputLine />
+          {children}
+        </>
+      )}
     </div>
   );
 }
