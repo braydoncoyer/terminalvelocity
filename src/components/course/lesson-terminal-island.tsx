@@ -4,8 +4,6 @@ import { useCallback, useState } from "react";
 import dynamic from "next/dynamic";
 import { useProgressStore } from "@/lib/progress/store";
 import { getLesson } from "@/lib/lessons/curriculum";
-import { Celebration } from "./celebration";
-import { ShareButton } from "./share-button";
 
 const LessonTerminal = dynamic(
   () =>
@@ -23,6 +21,7 @@ interface LessonTerminalIslandProps {
   lessonSlug: string;
   compositeSlug: string;
   lessonTitle: string;
+  nextLesson: { moduleSlug: string; lessonSlug: string } | null;
 }
 
 export function LessonTerminalIsland({
@@ -30,6 +29,7 @@ export function LessonTerminalIsland({
   lessonSlug,
   compositeSlug,
   lessonTitle,
+  nextLesson,
 }: LessonTerminalIslandProps) {
   const completeLesson = useProgressStore((s) => s.completeLesson);
   const [showCelebration, setShowCelebration] = useState(false);
@@ -43,26 +43,26 @@ export function LessonTerminalIsland({
     setShowCelebration(true);
   }, [completeLesson, compositeSlug]);
 
+  const handleReplay = useCallback(() => {
+    setShowCelebration(false);
+  }, []);
+
   if (!lesson) return null;
 
   return (
-    <>
-      <LessonTerminal
-        fsSeed={lesson.fsSeed}
-        goals={lesson.goals}
-        onComplete={handleComplete}
-        title="Terminal"
-        shareButton={<ShareButton lessonTitle={lessonTitle} />}
-        initialInput={lesson.initialInput}
-        initialHistory={lesson.initialHistory}
-        initialCommands={lesson.initialCommands}
-      />
-      <Celebration
-        show={showCelebration}
-        lessonTitle={lessonTitle}
-        onDismiss={() => setShowCelebration(false)}
-      />
-    </>
+    <LessonTerminal
+      fsSeed={lesson.fsSeed}
+      goals={lesson.goals}
+      onComplete={handleComplete}
+      title="Terminal"
+      initialInput={lesson.initialInput}
+      initialHistory={lesson.initialHistory}
+      initialCommands={lesson.initialCommands}
+      nextLesson={nextLesson}
+      lessonTitle={lessonTitle}
+      showSuccess={showCelebration}
+      onReplay={handleReplay}
+    />
   );
 }
 

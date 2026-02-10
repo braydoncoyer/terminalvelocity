@@ -1,9 +1,9 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { LessonTerminalProvider } from "../providers/lesson-terminal-provider";
 import { TerminalFrame } from "../terminal-frame";
 import { ValidationFeedback } from "../validation-feedback";
+import { TerminalSuccess } from "@/components/course/terminal-success";
 import { FSSeed } from "@/lib/terminal/filesystem/types";
 import { Goal } from "@/lib/terminal/validation/types";
 
@@ -12,10 +12,13 @@ interface LessonTerminalProps {
   goals: Goal[];
   onComplete: () => void;
   title?: string;
-  shareButton?: ReactNode;
   initialInput?: string;
   initialHistory?: string[];
   initialCommands?: string[];
+  nextLesson: { moduleSlug: string; lessonSlug: string } | null;
+  lessonTitle: string;
+  showSuccess: boolean;
+  onReplay: () => void;
 }
 
 export function LessonTerminal({
@@ -23,10 +26,13 @@ export function LessonTerminal({
   goals,
   onComplete,
   title,
-  shareButton,
   initialInput,
   initialHistory,
   initialCommands,
+  nextLesson,
+  lessonTitle,
+  showSuccess,
+  onReplay,
 }: LessonTerminalProps) {
   return (
     <LessonTerminalProvider
@@ -37,31 +43,30 @@ export function LessonTerminal({
       initialHistory={initialHistory}
       initialCommands={initialCommands}
     >
-      {({ fs, goalStates, isComplete, resetLesson }) => (
-        <div className="flex flex-col gap-3">
+      {({ fs, goalStates, resetLesson }) => {
+        const takeoverContent = showSuccess ? (
+          <TerminalSuccess
+            lessonTitle={lessonTitle}
+            nextLesson={nextLesson}
+            onReplay={() => {
+              onReplay();
+              resetLesson();
+            }}
+          />
+        ) : undefined;
+
+        return (
           <div className="h-[70vh] sm:h-[60vh] lg:h-[50vh] min-h-[300px] flex flex-col">
-            <TerminalFrame fs={fs} title={title}>
+            <TerminalFrame
+              fs={fs}
+              title={showSuccess ? "Lesson Complete" : title}
+              takeoverContent={takeoverContent}
+            >
               <ValidationFeedback goalStates={goalStates} />
             </TerminalFrame>
           </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={resetLesson}
-                className="rounded border border-bg-3 px-3 py-1.5 text-xs text-fg-muted transition-colors duration-150 hover:border-fg-muted hover:text-fg"
-              >
-                Reset
-              </button>
-              {isComplete && (
-                <span className="text-xs text-success font-medium">
-                  &#10003; Complete
-                </span>
-              )}
-            </div>
-            {shareButton}
-          </div>
-        </div>
-      )}
+        );
+      }}
     </LessonTerminalProvider>
   );
 }

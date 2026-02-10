@@ -145,6 +145,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
             lessonSlug={lessonSlug}
             compositeSlug={compositeSlug}
             lessonTitle={lesson.title}
+            nextLesson={next}
           />
         </div>
       )}
